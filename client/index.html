@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Live Code</title>
+</head>
+
+<body>
+  <div id="app">
+    <navbar-home></navbar-home>
+    <modal-form-signin></modal-form-signin>
+    <modal-form-create-item></modal-form-create-item>
+    <br><br><br>
+    <div class="container">
+      <div class="col-lg-12">
+        <form @submit.prevent="searchItem">
+          <div class="form-group">
+            <label>Search Item by Name</label>
+            <input type="text" class="form-control" v-model="searchName">
+          </div>
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-4" v-for="item in filteredListAllItem">
+          <div class="card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/A_blank_flag.png" class="card-img-top" alt="">
+            <div class="card-body">
+              <p>{{ item.name }}</p>
+              <p>{{ item.price }}</p>
+              <span class="text-muted">Stock: {{ item.stock }}</span>
+            </div>
+            <div class="card-footer">
+              <span class="badge badge-primary" v-for="tag in item.tags" style="margin-left: 5px">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./components/navbar.js"></script>
+  <script src="./components/modal-form.js"></script>
+  <script src="./components/modal-create-item.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        items: [],
+        searchName: '',
+      },
+      methods: {
+        getAllItems: function () {
+          axios({
+            method: 'GET',
+            url: 'http://localhost:3030/items'
+          })
+            .then(result => {
+              result.data.data.forEach(result => {
+                this.items.push({
+                  name: result.name,
+                  price: result.price,
+                  stock: result.stock,
+                  tags: result.tags
+                })
+              })
+            })
+        }
+      },
+      mounted() {
+        this.getAllItems()
+      },
+      computed: {
+        filteredListAllItem() {
+          let self = this
+          return self.items.filter(post => {
+            let name = post.name.toLowerCase()
+              .includes(self.searchName.toLowerCase())
+            return name
+          })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
