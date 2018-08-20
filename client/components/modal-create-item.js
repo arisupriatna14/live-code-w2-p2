@@ -48,7 +48,7 @@ Vue.component('modal-form-create-item', {
       const token = localStorage.getItem('token')
       axios({
         method: 'POST',
-        url: 'http://localhost:3030/items',
+        url: 'http://localhost:3000/items',
         data: {
           name: this.name,
           price: this.price,

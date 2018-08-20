@@ -67,7 +67,7 @@
         getAllItems: function () {
           axios({
             method: 'GET',
-            url: 'http://localhost:3030/items'
+            url: 'http://localhost:3000/items'
           })
             .then(result => {
               result.data.data.forEach(result => {
